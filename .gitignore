@@ -1,0 +1,43 @@
+# Binaries
+/repoxy
+repoxy-linux-*
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test files
+test-*.yaml
+multi-test.yaml
+
+# Release artifacts
+*.sha256
+
+# Test binary
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Dependency directories
+vendor/
+
+# Go workspace file
+go.work
+
+# Cache directories
+.cache/
+*.db
+*.db.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+

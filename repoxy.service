@@ -1,0 +1,32 @@
+[Unit]
+Description=EdgeCache - Reverse Proxy Lazy Mirror
+Documentation=https://github.com/edgecache/edgecache
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=edgecache
+Group=edgecache
+ExecStart=/usr/local/bin/edgecache -config /etc/edgecache.yaml
+Restart=on-failure
+RestartSec=5s
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/cache/edgecache
+
+# Resource limits
+LimitNOFILE=65536
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=edgecache
+
+[Install]
+WantedBy=multi-user.target
+

@@ -1,0 +1,117 @@
+server:
+  listeners:
+    - addr: ":8080"
+    # Add more listeners for HTTPS or other ports:
+    # - addr: ":8443"
+    #   tls:
+    #     cert_file: "/etc/ssl/certs/edgecache.crt"
+    #     key_file: "/etc/ssl/private/edgecache.key"
+
+cache:
+  dir: "/var/cache/repoxy"
+  max_size_bytes: "200GB"  # Supports units: B, KB/K, MB/M, GB/G, TB/T, PB/P
+  inactive_ttl: "7d"       # Remove files not accessed for 7 days
+  lock_timeout: "30s"      # Timeout for acquiring cache locks
+
+policies:
+  - name: "ubuntu-debs"
+    regex: "^/linux/ubuntu/.*\\.(deb|udeb)$"
+    cache_ttl: "30d"
+    allow_stale_while_revalidate: true
+
+  - name: "docker-blobs"
+    regex: "^/packages/docker/.*/blobs/sha256:"
+    cache_ttl: "90d"
+    allow_stale_while_revalidate: false
+
+  - name: "default"
+    regex: ".*"
+    cache_ttl: "24h"
+    allow_stale_while_revalidate: true
+
+upstreams:
+  ubuntu:
+    base_url: "https://archive.ubuntu.com/ubuntu"
+    path_prefix: "/linux/ubuntu"
+
+  ubuntu-security:
+    base_url: "https://security.ubuntu.com/ubuntu"
+    path_prefix: "/linux/ubuntu-security"
+
+  debian:
+    base_url: "https://deb.debian.org"
+    path_prefix: "/linux/debian"
+
+  alpine:
+    base_url: "https://dl-cdn.alpinelinux.org/alpine"
+    path_prefix: "/linux/alpine"
+
+  # Fedora
+  # fedora:
+  #   base_url: "https://download.fedoraproject.org/pub/fedora/linux"
+  #   path_prefix: "/linux/fedora"
+
+  # Arch Linux
+  # archlinux:
+  #   base_url: "https://mirror.rackspace.com/archlinux"
+  #   path_prefix: "/linux/archlinux"
+
+  # openSUSE
+  # opensuse:
+  #   base_url: "https://download.opensuse.org"
+  #   path_prefix: "/linux/opensuse"
+
+  # AlmaLinux
+  # almalinux:
+  #   base_url: "https://repo.almalinux.org/almalinux"
+  #   path_prefix: "/linux/almalinux"
+
+  powerdns:
+    base_url: "http://repo.powerdns.com"
+    path_prefix: "/powerdns"
+
+  # Example: Private registry with authentication
+  # private-repo:
+  #   base_url: "https://private.example.com"
+  #   path_prefix: "/private"
+  #   headers:
+  #     Authorization: "Bearer YOUR_TOKEN_HERE"
+  #     X-Custom-Header: "value"
+
+  # Example: Ubuntu Pro (ESM)
+  # ubuntu-pro:
+  #   base_url: "https://esm.ubuntu.com"
+  #   path_prefix: "/linux/ubuntu-pro"
+  #   headers:
+  #     # Get token from: https://ubuntu.com/pro
+  #     Authorization: "Bearer CONTRACT_TOKEN_HERE"
+
+admin:
+  enable_purge_api: false
+  token: "change-me"
+
+logging:
+  level: "info"
+  json: false
+
+# Egress proxy (for connecting to upstreams through a proxy)
+# proxy:
+#   enabled: true
+#   type: "http"         # or "socks5"
+#   url: "http://proxy.example.com:8080"
+#   username: ""         # optional
+#   password: ""         # optional
+
+# Ingress authentication (for securing access to the cache)
+# auth:
+#   enabled: true
+#   type: "basic"        # or "bearer"
+#   # For basic auth:
+#   users:
+#     admin: "secretpass123"
+#     user1: "password456"
+#   # For bearer token auth:
+#   # type: "bearer"
+#   # tokens:
+#   #   - "secret-token-1"
+#   #   - "secret-token-2"
